@@ -96,7 +96,7 @@ module.exports = {
         canonical_url: {type: 'text', maxlength: 2000, nullable: true},
         newsletter_id: {type: 'string', maxlength: 24, nullable: true, references: 'newsletters.id'},
         show_title_and_feature_image: {type: 'boolean', nullable: false, defaultTo: true},
-        reading_time: {type: 'integer', nullable: false, unsigned: true},
+        reading_time: {type: 'integer', nullable: true, unsigned: true},
         '@@INDEXES@@': [
             ['type','status','updated_at']
         ],
