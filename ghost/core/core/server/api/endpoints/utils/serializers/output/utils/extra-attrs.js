@@ -1,5 +1,3 @@
-const readingMinutes = require('@tryghost/helpers').utils.readingMinutes;
-
 /**
  *
  * @param {Object} options - frame options
@@ -61,15 +59,7 @@ module.exports.forPost = (options, model, attrs) => {
 
     // 4. Add `reading_time` if no columns were requested, or if `reading_time` was requested via `columns`
     if (noColumnsRequested || columnsIncludesReadingTime) {
-        if (attrs.html) {
-            let additionalImages = 0;
-
-            if (attrs.feature_image) {
-                additionalImages += 1;
-            }
-            attrs.reading_time = readingMinutes(attrs.html, additionalImages);
-        } else if (attrs.reading_time === null) {
-            // Remove null reading_time from response
+        if (attrs.reading_time === null) {
             delete attrs.reading_time;
         }
     }
