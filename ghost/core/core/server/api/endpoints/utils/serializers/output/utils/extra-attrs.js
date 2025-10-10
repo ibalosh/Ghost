@@ -1,5 +1,3 @@
-const readingMinutes = require('@tryghost/helpers').utils.readingMinutes;
-
 /**
  *
  * @param {Object} options - frame options
@@ -13,6 +11,7 @@ module.exports.forPost = (options, model, attrs) => {
     const columnsIncludesPlaintext = options.columns?.includes('plaintext');
     const columnsIncludesReadingTime = options.columns?.includes('reading_time');
     const formatsIncludesPlaintext = options.formats?.includes('plaintext');
+    const noColumnsRequested = !Object.prototype.hasOwnProperty.call(options, 'columns');
 
     // 1. Gets excerpt from post's plaintext. If custom_excerpt exists, it overrides the excerpt but the key remains excerpt.
     if (columnsIncludesExcerpt) {
@@ -43,7 +42,7 @@ module.exports.forPost = (options, model, attrs) => {
     }
 
     // 3. Displays excerpt if no columns was requested - specifically needed for the Admin Posts API
-    if (!Object.prototype.hasOwnProperty.call(options, 'columns')) {
+    if (noColumnsRequested) {
         let customExcerpt = model.get('custom_excerpt');
 
         if (customExcerpt !== null) {
@@ -59,14 +58,9 @@ module.exports.forPost = (options, model, attrs) => {
     }
 
     // 4. Add `reading_time` if no columns were requested, or if `reading_time` was requested via `columns`
-    if (!Object.prototype.hasOwnProperty.call(options, 'columns') || columnsIncludesReadingTime) {
-        if (attrs.html) {
-            let additionalImages = 0;
-
-            if (attrs.feature_image) {
-                additionalImages += 1;
-            }
-            attrs.reading_time = readingMinutes(attrs.html, additionalImages);
+    if (noColumnsRequested || columnsIncludesReadingTime) {
+        if (attrs.reading_time === null) {
+            delete attrs.reading_time;
         }
     }
 };
